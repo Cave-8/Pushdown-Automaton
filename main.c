@@ -46,6 +46,7 @@ int currentState = 0;
  * Current position on stack
  */
 int top = 0;
+char onTopStack = 'Z';
 
 /**
  * Add transition with specified parameters to transitionList
@@ -89,14 +90,15 @@ void addTransition(int begin, int end, char read, char onStack, char write[READL
  * Find transition corresponding to specified parameters
  * @return found transition
  */
-transition *findTransition(state state, char read, char stack[], char onStack) {
+transition *findTransition(state state, char read) {
     transition *handle = state.transitionList;
     while (handle != NULL) {
-        if (handle->read == read && stack[top] == onStack)
+        if (handle->read == read && onTopStack == handle->onStack)
             return handle;
         else
             handle = (transition *) handle->nextT;
     }
+    return NULL;
 }
 
 /**
@@ -272,6 +274,7 @@ void parsingMenu(state states[], int acceptingStates[]) {
 void routine(state states[], int acceptingStates[], char stack[]) {
     char buffer;
     bool end = false;
+    bool notAccepted = false;
     transition *newT = NULL;
 
     while (!end) {
@@ -282,41 +285,51 @@ void routine(state states[], int acceptingStates[], char stack[]) {
                 end = true;
                 break;
             case '\n':
-                for (int i = 0; i < numOfAcceptingStates; i++) {
+                for (int i = 0; i < numOfAcceptingStates && !notAccepted; i++) {
                     if (acceptingStates[i] == currentState) {
                         printf("String accepted\n");
-                        end = true;
                     }
                 }
+
+                /**
+                * Reset
+                */
+                currentState = 0;
+                memset(stack, '_', sizeof(char) * ALLOCCONST);
+                stack[0] = 'Z';
+                onTopStack = 'Z';
+                top = 0;
+                notAccepted = false;
                 break;
             default:
-                for (int i = 0; i < numOfStates; i++) {
+                for (int i = 0; i < numOfStates && !notAccepted; i++) {
                     if (states[i].id == currentState) {
-                        newT = findTransition(states[i], buffer, stack, stack[top]);
-                        currentState = newT->end;
-                        stack[top] = '_';
-
-                        for (int j = 0; j < strlen(newT->write); j++) {
-                            if (newT->write[j] == '|')
-                                break;
-                            else {
-                                stack[top] = newT->write[j];
-                                top++;
+                        newT = findTransition(states[i], buffer);
+                        if (newT != NULL) {
+                            currentState = newT->end;
+                            for (int j = 0; j < strlen(newT->write); j++) {
+                                if (newT->write[j] == '|') {
+                                    stack[top] = '_';
+                                    top--;
+                                    onTopStack = stack[top];
+                                    break;
+                                } else {
+                                    stack[top] = newT->write[j];
+                                    onTopStack = stack[top];
+                                    if (j != strlen(newT->write) - 1)
+                                        top++;
+                                }
                             }
+                        }
+                        else {
+                            printf ("String not accepted\n");
+                            notAccepted = true;
+                            break;
                         }
                         break;
                     }
                 }
-
         }
-
-        /**
-        * Reset
-        */
-        currentState = 0;
-        memset(stack, '_', sizeof(char) * ALLOCCONST);
-        stack[0] = 'Z';
-        top = 0;
     }
 }
 
@@ -366,11 +379,11 @@ int main() {
      * Setup of PDA
      */
     parsingMenu(states, acceptingStates);
-    printStateAndTransitions(states, acceptingStates);
+    //printStateAndTransitions(states, acceptingStates);
 
     /**
      * Begin operating
      */
-    //routine(states, acceptingStates, stack);
+    routine(states, acceptingStates, stack);
     return 0;
 }
