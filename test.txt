@@ -11,9 +11,12 @@ beginAcc
 3
 endAcc
 aabb
+aaaabbbb
+aaaabbbb
+ababab
+aaaabbbb
+aaaabbbb
+aaaabbbbb
 abab
-aabbbbbabab
-aaaaaaaabbbbbbbb
-aaaaaaabbbbbbbb
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+baba
 $

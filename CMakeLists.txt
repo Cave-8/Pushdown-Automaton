@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(PDA C)
-
+project(PDA)
 set(CMAKE_C_STANDARD 11)
-
+set(SOURCE_FILES main.c)
 add_executable(PDA main.c)

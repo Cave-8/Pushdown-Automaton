@@ -143,7 +143,8 @@ int createState(state states[]) {
     if (numOfStates > ALLOCCONST - 1)
         states = realloc(states, REALLOCCONST * sizeof(&states));
 
-    fgets(buffer, READLENGTH, stdin);
+    if(fgets(buffer, READLENGTH, stdin) == NULL)
+        exit(-1);
 
     if ((buffer[0] == 'e' && buffer[1] == 'n' && buffer[2] == 'd'))
         return 1;
@@ -237,7 +238,8 @@ int createState(state states[]) {
 int insertAcceptingState(int accStates[]) {
 
     char buffer[READLENGTH];
-    fgets(buffer, READLENGTH, stdin);
+    if(fgets(buffer, READLENGTH, stdin) == NULL)
+        exit(-1);
 
     if (numOfAcceptingStates > ALLOCCONST - 1)
         accStates = realloc(accStates, REALLOCCONST * sizeof(&accStates));
@@ -256,11 +258,13 @@ int insertAcceptingState(int accStates[]) {
  */
 void parsingMenu(state states[], int acceptingStates[]) {
     char buffer[READLENGTH];
-    fgets(buffer, READLENGTH, stdin);
+    if(fgets(buffer, READLENGTH, stdin) == NULL)
+        exit(-1);
     while (createState(states) != 1);
 
     buffer[0] = '\0';
-    fgets(buffer, READLENGTH, stdin);
+    if(fgets(buffer, READLENGTH, stdin) == NULL)
+        exit(-1);
     while (insertAcceptingState(acceptingStates) != 1);
 }
 
@@ -283,6 +287,8 @@ void routine(state states[], int acceptingStates[], char stack[]) {
         switch (buffer) {
             case '$':
                 end = true;
+                break;
+            case '\r':
                 break;
             case '\n':
                 for (int i = 0; i < numOfAcceptingStates && !notAccepted; i++) {
