@@ -33,4 +33,4 @@ Additional informations:<br>
 Code was written and compiled using WSL.<br>
 You can compile it yourself (I used `gcc main.c -o PDA`) and use following command to test it (be sure that PDA and tests files are in the same folder, otherwise use respective paths):<br>
 `./PDA < ./nameOfYourTest.txt > ./output.txt`<br>
-Being deterministic this simulator **doesn't support epsilon transition**.
+Due to the fact that this automaton is deterministic, it **doesn't support epsilon transition**.
