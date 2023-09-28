@@ -225,7 +225,6 @@ int createState(state states[]) {
     }
 
     alreadyPresent = false;
-    //Add transition
     addTransition(beginState, endState, read, onStack, write, states);
     return 0;
 }
@@ -273,7 +272,7 @@ void parsingMenu(state states[], int acceptingStates[]) {
  */
 
 /**
- * TM operating function
+ * PDA operating function
  */
 void routine(state states[], int acceptingStates[], char stack[]) {
     char buffer;
@@ -345,7 +344,7 @@ void routine(state states[], int acceptingStates[], char stack[]) {
 }
 
 /**
- * Print current states and transitions read
+ * Print current states and transitions read, usable for debugging
  */
 void printStateAndTransitions(state states[], int acceptingStates[]) {
     for (int i = 0; i < numOfStates; i++) {
@@ -369,8 +368,7 @@ void printStateAndTransitions(state states[], int acceptingStates[]) {
 int main() {
 
     /**
-     * TM stack
-     * Hypothesis of single stack TM
+     * PDA stack
      */
     char *stack = (char *) malloc(sizeof(char) * ALLOCCONST);
     memset(stack, '_', sizeof(char) * ALLOCCONST);
@@ -390,7 +388,6 @@ int main() {
      * Setup of PDA
      */
     parsingMenu(states, acceptingStates);
-    //printStateAndTransitions(states, acceptingStates);
 
     /**
      * Begin operating
