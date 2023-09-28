@@ -294,8 +294,13 @@ void routine(state states[], int acceptingStates[], char stack[]) {
                 for (int i = 0; i < numOfAcceptingStates && !notAccepted; i++) {
                     if (acceptingStates[i] == currentState) {
                         printf("String accepted\n");
+                        break;
                     }
+                    else if (i == numOfAcceptingStates - 1)
+                        printf ("String not accepted\n");
                 }
+
+
 
                 /**
                 * Reset
