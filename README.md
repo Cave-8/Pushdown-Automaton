@@ -27,7 +27,7 @@ Additional informations:<br>
 
 # Provided tests
 - test0.txt contains PDA recognizing L = {a^nb^n | n>=1}
-- test1.txt contains PDA recognizing L = {w2w'2 | where w (0,1)* and w' is w reversed}
+- test1.txt contains PDA recognizing L = {w2w'2 | where w is generated from (0,1)* and w' is w reversed}
 
 # Notes
 Code was written and compiled using WSL.<br>
