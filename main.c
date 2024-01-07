@@ -49,6 +49,11 @@ int top = 0;
 char onTopStack = 'Z';
 
 /**
+ * Used to activate verbose mode
+ */
+int verboseMode = false;
+
+/**
  * Add transition with specified parameters to transitionList
  */
 void addTransition(int begin, int end, char read, char onStack, char write[READLENGTH], state states[]) {
@@ -143,7 +148,7 @@ int createState(state states[]) {
     if (numOfStates > ALLOCCONST - 1)
         states = realloc(states, REALLOCCONST * sizeof(&states));
 
-    if(fgets(buffer, READLENGTH, stdin) == NULL)
+    if (fgets(buffer, READLENGTH, stdin) == NULL)
         exit(-1);
 
     if ((buffer[0] == 'e' && buffer[1] == 'n' && buffer[2] == 'd'))
@@ -237,7 +242,7 @@ int createState(state states[]) {
 int insertAcceptingState(int accStates[]) {
 
     char buffer[READLENGTH];
-    if(fgets(buffer, READLENGTH, stdin) == NULL)
+    if (fgets(buffer, READLENGTH, stdin) == NULL)
         exit(-1);
 
     if (numOfAcceptingStates > ALLOCCONST - 1)
@@ -257,19 +262,15 @@ int insertAcceptingState(int accStates[]) {
  */
 void parsingMenu(state states[], int acceptingStates[]) {
     char buffer[READLENGTH];
-    if(fgets(buffer, READLENGTH, stdin) == NULL)
+    if (fgets(buffer, READLENGTH, stdin) == NULL)
         exit(-1);
     while (createState(states) != 1);
 
     buffer[0] = '\0';
-    if(fgets(buffer, READLENGTH, stdin) == NULL)
+    if (fgets(buffer, READLENGTH, stdin) == NULL)
         exit(-1);
     while (insertAcceptingState(acceptingStates) != 1);
 }
-
-/**
- * Find required transition
- */
 
 /**
  * PDA operating function
@@ -294,12 +295,9 @@ void routine(state states[], int acceptingStates[], char stack[]) {
                     if (acceptingStates[i] == currentState) {
                         printf("String accepted\n");
                         break;
-                    }
-                    else if (i == numOfAcceptingStates - 1)
-                        printf ("String not accepted\n");
+                    } else if (i == numOfAcceptingStates - 1)
+                        printf("String not accepted\n");
                 }
-
-
 
                 /**
                 * Reset
@@ -317,6 +315,13 @@ void routine(state states[], int acceptingStates[], char stack[]) {
                         newT = findTransition(states[i], buffer);
                         if (newT != NULL) {
                             currentState = newT->end;
+
+                            if (verboseMode) {
+                                printf("------------------------------------\n");
+                                printf("Current state %d\n", currentState);
+                                printf("Going to %d\n", newT->begin);
+                            }
+
                             for (int j = 0; j < strlen(newT->write); j++) {
                                 if (newT->write[j] == '|') {
                                     stack[top] = '_';
@@ -330,9 +335,17 @@ void routine(state states[], int acceptingStates[], char stack[]) {
                                         top++;
                                 }
                             }
-                        }
-                        else {
-                            printf ("String not accepted\n");
+
+                            if (verboseMode) {
+                                printf("------------------------------------\n");
+                            }
+                        } else {
+                            printf("String not accepted\n");
+
+                            if (verboseMode) {
+                                printf("------------------------------------\n");
+                            }
+
                             notAccepted = true;
                             break;
                         }
@@ -347,6 +360,7 @@ void routine(state states[], int acceptingStates[], char stack[]) {
  * Print current states and transitions read, usable for debugging
  */
 void printStateAndTransitions(state states[], int acceptingStates[]) {
+    printf("------------------------------------\n");
     for (int i = 0; i < numOfStates; i++) {
         printf("State: %d\n", states[i].id);
         transition *handle = states[i].transitionList;
@@ -363,9 +377,36 @@ void printStateAndTransitions(state states[], int acceptingStates[]) {
     for (int i = 0; i < numOfAcceptingStates; i++) {
         printf("%d\n", acceptingStates[i]);
     }
+    printf("------------------------------------\n");
 }
 
-int main() {
+/**
+ * Command validation
+ */
+void validateArguments(int argc, char **argv) {
+    switch (argc) {
+        case 1:
+            break;
+        case 2:
+            if (strcmp(argv[1], "-v") == 0)
+                verboseMode = true;
+            else {
+                printf("Unexpected command, exiting...\n");
+                exit(-1);
+            }
+            break;
+        default:
+            printf("Unexpected command, exiting...\n");
+            exit(-1);
+    }
+}
+
+int main(int argc, char **argv) {
+
+    /**
+     * Command validation
+     */
+    validateArguments(argc, argv);
 
     /**
      * PDA stack
@@ -389,6 +430,8 @@ int main() {
      */
     parsingMenu(states, acceptingStates);
 
+    if (verboseMode)
+        printStateAndTransitions(states, acceptingStates);
     /**
      * Begin operating
      */

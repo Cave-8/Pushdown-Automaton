@@ -1,4 +1,4 @@
 /.idea
 /cmake-build-debug
-output.txt
+tests/outputs/output.txt
 PDA

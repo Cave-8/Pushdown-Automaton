@@ -17,7 +17,7 @@ string3<br>
 $<br>
 
 I.E: 
-- To move from state 0 to 1 while reading a from input, Z from stack and write ZA on stack you should write: 0 a A ZA 1
+- To move from state 0 to 1 while reading a from input, Z from stack and write ZA on stack you should write: 0 a Z ZA 1
 - To move from state 1 to 1 while reading a from input, A from stack and delete top character from stack you should write: 1 a A | 1
 <!-- -->
 Some examples can be seen in test files.<br>
@@ -26,11 +26,14 @@ Additional informations:<br>
 - States is identified **only** by number.
 
 # Provided tests
-- test0.txt contains PDA recognizing L = {a^nb^n | n>=1}
-- test1.txt contains PDA recognizing L = {w2w'2 | where w is generated from (0,1)* and w' is w reversed}
+- input0.txt contains PDA recognizing L = {a^nb^n | n>=1},
+- input1.txt contains PDA recognizing L = {w2w'2 | where w is generated from (0,1)* and w' is w reversed},
+- input2.txt contains well parenthesized language.
 
 # Notes
 Code was written and compiled using WSL.<br>
-You can compile it yourself (I used `gcc main.c -o PDA`) and use following command to test it (be sure that PDA and tests files are in the same folder, otherwise use respective paths):<br>
-`./PDA < ./nameOfYourTest.txt > ./output.txt`<br>
-Due to the fact that this automaton is deterministic, it **doesn't support epsilon transition**.
+You can compile it yourself (I.E: `gcc main.c -o PDA`) and use following command to test it (use your paths):<br>
+`./PDA < ./inputs/yourTest.txt > ./outputs/outputOfYourTest.txt`.<br>
+To run it in verbose mode run: `./PDA -v < ./inputs/yourTest.txt > ./outputs/outputOfYourTest.txt`.<br>
+You can compile and test automatically by running `bash test.sh` when in the project folder.<br>
+Due to the fact that this automaton is deterministic, it **doesn't support epsilon transition** (pay attention during PDA creation).
